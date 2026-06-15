@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000000">
+
+    <!-- ── Full-screen live camera preview ───────────────────────────── -->
+    <androidx.camera.view.PreviewView
+        android:id="@+id/viewFinder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <!-- ── YOLO bounding-box overlay (full screen, transparent) ──────── -->
+    <com.example.graduationprojectsapp.BoxOverlayView
+        android:id="@+id/overlayView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <!-- ── Depth PiP: bottom-right corner, 30% of screen width ──────── -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/depthOverlayCard"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="12dp"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="6dp"
+        app:cardBackgroundColor="#CC000000"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintWidth_percent="0.30"
+        app:layout_constraintDimensionRatio="1:1">
+
+        <ImageView
+            android:id="@+id/depthOverlayImage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:visibility="invisible"
+            android:contentDescription="Depth map" />
+    </androidx.cardview.widget.CardView>
+
+    <!-- ── Depth PiP label ──────────────────────────────────────────── -->
+    <TextView
+        android:id="@+id/depthLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="14dp"
+        android:layout_marginBottom="4dp"
+        android:text="DEPTH"
+        android:textColor="#FFFFFF"
+        android:textSize="9sp"
+        android:letterSpacing="0.1"
+        android:background="#88000000"
+        android:paddingHorizontal="4dp"
+        android:paddingVertical="2dp"
+        app:layout_constraintBottom_toTopOf="@id/depthOverlayCard"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- ── Hazard warning banner (center-bottom) ─────────────────────── -->
+    <TextView
+        android:id="@+id/hazardStatusText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="100dp"
+        android:text="⚠ WALL"
+        android:textColor="#FFFFFF"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:background="#CC880000"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="8dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- ── USB status indicator (top-right) ─────────────────────────── -->
+    <TextView
+        android:id="@+id/usbStatusText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="12dp"
+        android:text="○ USB"
+        android:textColor="#AAAAAA"
+        android:textSize="12sp"
+        android:background="#88000000"
+        android:paddingHorizontal="8dp"
+        android:paddingVertical="4dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
