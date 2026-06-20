@@ -37,8 +37,6 @@ class BoxOverlayView(context: Context, attrs: AttributeSet?) : View(context, att
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
-        // --- THE FIX: Calculate "Center Crop" Scaling ---
-        // This matches the default behavior of PreviewView.ScaleType.FILL_CENTER
         val viewWidth = width.toFloat()
         val viewHeight = height.toFloat()
 

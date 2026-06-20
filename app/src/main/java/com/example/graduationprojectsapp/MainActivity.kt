@@ -48,18 +48,10 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
     // YOLOv26Detector: letterboxing + direct ByteBuffer + GPU-capable
     private val v26ModelName = "Venom_v7YOLOv26n_FP16.tflite"
 
-    // YOLOv11Detector: stretch-resize preprocessing, for Venom custom models
+    // YOLOv11Detector: stretch-resize preprocessing
     private val v11ModelName = "Venom_v5YOLOv11n_FP16.tflite"
 
     // ── Detector switch ────────────────────────────────────────────────────────
-    // USE_V26 = true  → YOLOv26Detector (letterboxing, handles any Ultralytics TFLite layout)
-    //                   Requires yolov26n.tflite in assets/. Check Logcat tag "YOLOv26Detector"
-    //                   for a startup report showing detected shape, layout, and coord space.
-    // USE_V26 = false → YOLOv11Detector (stretch-resize, for the existing Venom models)
-    //
-    // IMPORTANT: The Venom models (Venom_v*.tflite) were trained with stretch-resize, NOT
-    // letterboxing. Running them through YOLOv26Detector (USE_V26=true) will produce shifted
-    // boxes because the preprocessing doesn't match the training. Use USE_V26=false for Venom.
     private val USE_V26 = false    // ← set true only when yolov26n.tflite is in assets/
 
     private lateinit var v26Detector: YOLOv26Detector
@@ -76,9 +68,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
     private var usbSerialPort: UsbSerialPort? = null
     private val BAUD_RATE = 115200
     private var lastYoloSignalTime = 0L
-    private var lastHazardSignalTime = 0L
     private val YOLO_DEBOUNCE_MS  = 1_000L
-    private val HAZARD_DEBOUNCE_MS = 2_000L
 
     // ── Sensors ───────────────────────────────────────────────────────────────
     private lateinit var sensorManager: SensorManager
@@ -95,11 +85,8 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
 
         val labels = loadLabels(labelFilename)
 
-        // Always init v11 (for Venom models, no asset required)
         v11Detector = YOLOv11Detector(this, v11ModelName, labels)
 
-        // Init v26 — requires yolov26n.tflite in assets/
-        // If the model file is missing, v26 will log an error and return empty detections.
         v26Detector = YOLOv26Detector(
             context           = this,
             modelName         = v26ModelName,
@@ -188,7 +175,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
                 detections = v11Detector.detect(scaledForYolo, originalWidth, originalHeight)
             }
 
-            // ── Depth every N frames (non-blocking) ───────────────────────────
+            // ── Depth every N frames ───────────────────────────
             frameCount++
             if (frameCount % DEPTH_FRAME_INTERVAL == 0 && isDepthRunning.compareAndSet(false, true)) {
                 val depthInput = Bitmap.createScaledBitmap(bitmap, 480, 480, true)
